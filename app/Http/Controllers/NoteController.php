@@ -4,46 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\NoteRequest;
 use App\Models\Note;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class NoteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    public function index(): JsonResponse
     {
-        $notes = Note::all();
-        // Return the notes as JSON
         //json(params) 1st param is the data to be returned, 2nd param is the status code, 3rd param is the headers
-        return response()->json($notes, 200);
+        return response()->json(Note::all(), 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(NoteRequest $request)
+    public function store(NoteRequest $request): JsonResponse
     {
-        Note::create($request->all());
+        $note = Note::create($request->all());
         // 201 status code means that a resource has been created
         return response()->json([
-            'success' => true
+            'success' => true,
+            'data' => $note
         ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         $note = Note::find($id);
         return response()->json($note, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(NoteRequest $request, string $id)
+    public function update(NoteRequest $request, string $id): JsonResponse
     {
         $note = Note::find($id);
         $note->title = $request->title;
@@ -51,15 +40,13 @@ class NoteController extends Controller
         $note->save();
 
         return response()->json([
-            'success' => true
+            'success' => true,
+            'data' => $note
         ], 200);
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
         Note::destroy($id);
 
